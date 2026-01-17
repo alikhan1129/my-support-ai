@@ -1,63 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model User {
   id            String         @id @default(uuid())
   email         String         @unique
   name          String?
-  conversations Conversation[]
-  orders        Order[]
-  invoices      Invoice[]
   createdAt     DateTime       @default(now())
+  conversations Conversation[]
+  invoices      Invoice[]
+  orders        Order[]
 }
 
 model Conversation {
   id        String    @id @default(uuid())
-  title     String?   // Added title
+  title     String?
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  messages  Message[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id])
+  messages  Message[]
 }
 
 model Message {
   id             String       @id @default(uuid())
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
-  role           String       // 'user' or 'assistant' or 'system'
+  role           String
   content        String
   createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
 }
 
 model Order {
-  id          String    @id @default(uuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  productName String    // Description of the item
-  status      String    // 'processing', 'shipped', 'delivered', 'cancelled'
-  deliveryDate DateTime? // For tracking inquiries
-  amount      Float     // Useful for cross-referencing with billing
-  invoices    Invoice[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String    @id @default(uuid())
+  userId       String
+  productName  String
+  status       String
+  deliveryDate DateTime?
+  amount       Float
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  invoices     Invoice[]
+  user         User      @relation(fields: [userId], references: [id])
 }
 
 model Invoice {
   id            String   @id @default(uuid())
-  orderId       String?  // Foreign key linking to the Orders table
-  order         Order?   @relation(fields: [orderId], references: [id])
+  orderId       String?
   userId        String
-  user          User     @relation(fields: [userId], references: [id])
   amount        Float
-  paymentStatus String   // 'paid', 'pending', 'failed' (formerly status)
-  refundStatus  String?  // 'none', 'requested', 'processed'
-  invoiceUrl    String?  // Link to mock PDF
+  paymentStatus String
+  refundStatus  String?
+  invoiceUrl    String?
   createdAt     DateTime @default(now())
+  order         Order?   @relation(fields: [orderId], references: [id])
+  user          User     @relation(fields: [userId], references: [id])
 }

@@ -2,6 +2,11 @@
 
 A full-stack AI customer support system built with a multi-agent architecture. The system uses a parent **Router Agent** to analyze user intent and delegate tasks to specialized sub-agents: **Order Agent**, **Billing Agent**, and **Support Agent**.
 
+## 🔗 Quick Links
+
+- **Demo Video**: [Loom Video](https://www.loom.com/share/9717109f6a584b74aa06c6b3ba972928)
+- **Live Application**: [Vercel Deployment](https://my-support-ai-frontend-bh1kowo3m-alikhan1129s-projects.vercel.app)
+
 ## 🚀 Features
 
 - **Multi-Agent Architecture**: Intelligent routing between specialized agents.
@@ -98,3 +103,23 @@ npm run dev
 - **Robust Deployment**: Backend is configured to auto-build typescript and generate Prisma clients on deployment.
 - **Type Safety**: strict TypeScript configuration across the monorepo.
 - **Error Handling**: Graceful error handling for missing API keys and database connection issues.
+
+## ⚠️ Challenges & Errors Faced
+
+During the development and deployment of this project, several technical hurdles were encountered and resolved:
+
+1.  **Database Connection Issues (Prisma + Supabase)**: 
+    - *Challenge*: Encountered issues with connection pooling when using Prisma with Supabase in a serverless/containerized environment.
+    - *Solution*: Configured the connection string with `?pgbouncer=true` and adjusted the Prisma schema to handle connection limits effectively.
+
+2.  **CORS & Production Environment Variables**:
+    - *Challenge*: Initially, the frontend failed to communicate with the backend on Render due to CORS restrictions and incorrect environment variable naming in the production dashboard.
+    - *Solution*: Implemented dynamic CORS configuration in the Hono backend to allow the specific Vercel domain and ensured all `VITE_` prefixed variables were correctly set in the Vercel dashboard.
+
+3.  **Vercel AI SDK Streaming**:
+    - *Challenge*: Getting the streaming response to work correctly between the Backend (Hono) and the Frontend (React) required precise handling of the `StreamData` and `AIStream` objects to ensure the UI updated in real-time without buffering.
+    - *Solution*: Refined the backend tool-calling logic to ensure that streaming chunks were sent immediately after tool execution.
+
+4.  **Monorepo Deployment Complexity**:
+    - *Challenge*: Deploying a Turborepo project where the Frontend and Backend are in separate subdirectories required specific configuration for "Root Directory" and "Build Commands" on both Render and Vercel.
+    - *Solution*: Configured the `Backend` directory as a standalone project for Render and used the `Frontend` directory as the root for Vercel, ensuring `npm install` worked correctly in both contexts.
