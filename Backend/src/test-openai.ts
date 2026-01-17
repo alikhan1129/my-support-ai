@@ -21,7 +21,7 @@ async function testOpenAI() {
     console.log(`Testing model: ${modelName}...`);
     try {
       const { text } = await generateText({
-        model: openai(modelName),
+        model: openai(modelName) as any,
         prompt: 'Hi, are you working?',
       });
       console.log(`✅ ${modelName} works! Response: ${text.trim()}`);

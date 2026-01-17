@@ -14,7 +14,7 @@ async function listModels() {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
     }
-    const data = await response.json();
+    const data = await response.json() as any;
     console.log('Available Models:');
     if (data.models) {
       data.models.forEach((model: any) => {

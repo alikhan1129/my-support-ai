@@ -26,7 +26,7 @@ const chatSchema = z.object({
 })
 
 // Main Chat Endpoint
-app.post('/api/chat', zValidator('json', chatSchema), async (c) => {
+app.post('/api/chat', zValidator('json', chatSchema as any), async (c) => {
   const { messages, userId } = c.req.valid('json')
   
   // Get the last user message to determine intent
