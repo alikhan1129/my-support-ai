@@ -1,0 +1,63 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  name          String?
+  conversations Conversation[]
+  orders        Order[]
+  invoices      Invoice[]
+  createdAt     DateTime       @default(now())
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  title     String?   // Added title
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  role           String       // 'user' or 'assistant' or 'system'
+  content        String
+  createdAt      DateTime     @default(now())
+}
+
+model Order {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  productName String    // Description of the item
+  status      String    // 'processing', 'shipped', 'delivered', 'cancelled'
+  deliveryDate DateTime? // For tracking inquiries
+  amount      Float     // Useful for cross-referencing with billing
+  invoices    Invoice[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Invoice {
+  id            String   @id @default(uuid())
+  orderId       String?  // Foreign key linking to the Orders table
+  order         Order?   @relation(fields: [orderId], references: [id])
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  amount        Float
+  paymentStatus String   // 'paid', 'pending', 'failed' (formerly status)
+  refundStatus  String?  // 'none', 'requested', 'processed'
+  invoiceUrl    String?  // Link to mock PDF
+  createdAt     DateTime @default(now())
+}

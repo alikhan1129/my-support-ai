@@ -1,0 +1,16 @@
+# Dependencies
+node_modules
+.turbo
+dist
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode
+.idea
+
+# Logs
+*.log
