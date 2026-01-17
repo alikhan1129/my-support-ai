@@ -16,10 +16,8 @@
     "Backend",
     "Frontend"
   ],
-  "devDependencies": {
-    "turbo": "^2.7.4"
-  },
   "dependencies": {
-    "ai": "^3.4.0"
+    "ai": "^3.4.0",
+    "turbo": "^2.7.4"
   }
 }
